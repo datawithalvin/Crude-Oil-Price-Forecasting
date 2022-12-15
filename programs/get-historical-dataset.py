@@ -19,7 +19,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 def get_crude_dataset():
         # load historical
-        hist_crude = pd.read_csv("../historical-datasets/Crude Oil Prices.csv")
+        hist_crude = pd.read_csv("../historical-dataset/Crude Oil Prices.csv")
         hist_crude["Date"] = pd.to_datetime(hist_crude["Date"])
 
         driver = webdriver.Chrome(ChromeDriverManager().install())
@@ -42,7 +42,7 @@ def get_crude_dataset():
         concat_df = pd.concat([hist_crude, new_crude])
         concat_df.drop_duplicates('Date', inplace=True)
         
-        return concat_df.to_csv("../historical-datasets/Crude Oil Prices.csv", index=False)
+        return concat_df.to_csv("../historical-dataset/Crude Oil Prices.csv", index=False)
 
 
 # call the function

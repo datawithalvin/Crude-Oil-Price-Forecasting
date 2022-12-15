@@ -82,18 +82,18 @@ def get_crude_oil_forecast():
         test_size = len(df) - train_size
         train_data, test_data = df[0:train_size,:], df[train_size:len(df),:1]
 
-        x_input_test = test_data[-40:].reshape(1,-1) # 40 days window
+        x_input_test = test_data[-120:].reshape(1,-1) # 120 days window
         temp_input = list(x_input_test)
         temp_input = temp_input[0].tolist()
 
         # predict for 2 week (14 days)
         future_list = [] # initiate empty list
-        n_steps = 40
+        n_steps = 120
         i = 0
 
         # set loop
         while(i<14):
-                if (len(temp_input)>40):
+                if (len(temp_input)>120):
                         x_input_test=np.array(temp_input[1:])
                         print("{} day input {}".format(i,x_input_test))
                         x_input_test = x_input_test.reshape(1,-1)
@@ -206,9 +206,13 @@ def get_crude_oil_forecast():
         # concat both dataframe
         list_viz = [viz_hist, viz_future]
         viz_concat = pd.concat(list_viz)
-        to_export = viz_concat[-84:]
+        # to_export = viz_concat[-84:]
+        viz_forecast = viz_concat[["Price", "ConfidenceLow", "ConfidenceHigh", "LineColor"]][-14:].sort_index(ascending=False)
+        viz_forecast = viz_forecast.reset_index()
+        viz_historical = viz_concat[["Price", "ConfidenceLow", "ConfidenceHigh", "LineColor"]][-84:-13].sort_index(ascending=False)
+        viz_historical = viz_historical.reset_index()
 
-        return to_export.to_csv("../forecasted-dataset/forecasted-crude-oil-dataset.csv", index=False)
+        return viz_forecast.to_csv("../forecasted-dataset/forecasted-crude-oil-dataset.csv", index=False), viz_historical.to_csv("../forecasted-dataset/historical-crude-oil-dataset.csv", index=False)
 
 
 # call the function
