@@ -9,6 +9,7 @@ import json
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 
 
@@ -19,10 +20,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 def get_crude_dataset():
         # load historical
-        hist_crude = pd.read_csv("../historical-dataset/Crude Oil Prices.csv")
+        try:
+                hist_crude = pd.read_csv("../historical-dataset/Crude Oil Prices.csv")
+        except FileNotFoundError:
+                hist_crude = pd.DataFrame()
         hist_crude["Date"] = pd.to_datetime(hist_crude["Date"])
 
-        driver = webdriver.Chrome(ChromeDriverManager().install())
+        # hist_crude = pd.read_csv("../historical-dataset/Crude Oil Prices.csv")
+        # hist_crude["Date"] = pd.to_datetime(hist_crude["Date"])
+
+        # driver = webdriver.Chrome(ChromeDriverManager().install())
+        driver = webdriver.Edge(EdgeChromiumDriverManager().install())
         driver.get("https://www.investing.com/commodities/crude-oil-historical-data")
 
         soup = BeautifulSoup(driver.page_source, 'lxml')
